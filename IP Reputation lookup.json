@@ -1,0 +1,477 @@
+{
+  "name": "IP Reputation lookup",
+  "description": "",
+  "actions": [
+    {
+      "action": {
+        "type": "manual_trigger",
+        "tag": "core_action",
+        "connection_id": null,
+        "connection_name": null,
+        "use_connection_name": false,
+        "integration_id": null,
+        "data": {
+          "name": "Manual Trigger",
+          "action_type": "manual_trigger",
+          "trigger_type": "dynamic",
+          "dynamic_properties": {
+            "ip": {
+              "title": "",
+              "description": "",
+              "index": 0,
+              "type": "text",
+              "validation": {
+                "required": true,
+                "min_length": null,
+                "max_length": null
+              }
+            }
+          },
+          "static_payload": "{}"
+        },
+        "state": "active",
+        "description": null,
+        "client_data": {
+          "position": {
+            "x": 0,
+            "y": 0
+          },
+          "dimensions": {
+            "width": 256,
+            "height": 100
+          },
+          "collapsed": false
+        },
+        "snippet_workflow_id": null,
+        "snippet_version_id": null
+      },
+      "export_id": 5,
+      "connected_to": [
+        {
+          "target": 0,
+          "custom_handle": null
+        }
+      ],
+      "parent_action": null
+    },
+    {
+      "action": {
+        "type": "variable",
+        "tag": "core_action",
+        "connection_id": null,
+        "connection_name": null,
+        "use_connection_name": false,
+        "integration_id": null,
+        "data": {
+          "name": "Attacker IP Variable",
+          "action_type": "variable",
+          "variables": [
+            {
+              "name": "ip",
+              "value": "{{manual-trigger.data.ip}}",
+              "should_use_as_output": false,
+              "is_secret": false
+            }
+          ],
+          "variables_scope": "local",
+          "expire_in_unit": null,
+          "expire_in_value": null,
+          "expire_method": null,
+          "workflows_acl": null
+        },
+        "state": "active",
+        "description": "",
+        "client_data": {
+          "position": {
+            "x": 0,
+            "y": 200.6772
+          },
+          "dimensions": {
+            "width": 256,
+            "height": 76
+          },
+          "collapsed": false
+        },
+        "snippet_workflow_id": null,
+        "snippet_version_id": null
+      },
+      "export_id": 0,
+      "connected_to": [
+        {
+          "target": 1,
+          "custom_handle": null
+        },
+        {
+          "target": 2,
+          "custom_handle": null
+        },
+        {
+          "target": 3,
+          "custom_handle": null
+        },
+        {
+          "target": 4,
+          "custom_handle": null
+        },
+        {
+          "target": 6,
+          "custom_handle": null
+        },
+        {
+          "target": 7,
+          "custom_handle": null
+        }
+      ],
+      "parent_action": null
+    },
+    {
+      "action": {
+        "type": "http_request",
+        "tag": "integration",
+        "connection_id": "46523ec0-226b-480d-874a-d5c0c84b6706",
+        "connection_name": "",
+        "use_connection_name": false,
+        "integration_id": "75af0459-ecea-48eb-9a62-7ec2e68a4c73",
+        "data": {
+          "name": "Check IP",
+          "action_type": "http_request",
+          "public_action_id": "6ea08101-8a9f-4559-8194-0af800acd620",
+          "method": "get",
+          "url": "{{Connection.protocol}}{{Connection.url}}<@/api/v2/check@>",
+          "url_path": "/api/v2/blacklist",
+          "url_prefix": null,
+          "payload": null,
+          "parameters": [
+            {
+              "parameter_name": "ipAddress",
+              "parameter_value": "{{manual-trigger.data.ip}}"
+            },
+            {
+              "parameter_name": "maxAgeInDays",
+              "parameter_value": "365"
+            },
+            {
+              "parameter_name": "verbose",
+              "parameter_value": "yes"
+            }
+          ],
+          "retry_on_status_code": null,
+          "retry_on_status_codes": [
+            500
+          ],
+          "ssl_verification": true,
+          "timeout": 30,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "use_authentication_data": true,
+          "use_proxy": false,
+          "proxy_user": null,
+          "proxy_password": null,
+          "proxy_host": null,
+          "proxy_port": null,
+          "redirect_follow": true,
+          "continue_on_fail": false
+        },
+        "state": "active",
+        "description": "The check endpoint accepts a single IP address (v4 or v6). Optionally you may set the maxAgeInDays parameter to only return reports within the last x amount of days.",
+        "client_data": {
+          "position": {
+            "x": 0,
+            "y": 377.35439999999994
+          },
+          "dimensions": {
+            "width": 256,
+            "height": 76
+          },
+          "collapsed": false
+        },
+        "snippet_workflow_id": null,
+        "snippet_version_id": null
+      },
+      "export_id": 1,
+      "connected_to": [],
+      "parent_action": null
+    },
+    {
+      "action": {
+        "type": "http_request",
+        "tag": "integration",
+        "connection_id": "72041445-cd8a-4d89-915b-fd0befc6aa0d",
+        "connection_name": "",
+        "use_connection_name": false,
+        "integration_id": "99c539d6-9597-4e8e-97df-a2e802fd6387",
+        "data": {
+          "name": "Get IPv4 Reputation",
+          "action_type": "http_request",
+          "public_action_id": "e0a8849b-a89c-4785-a816-5ad982d41e8d",
+          "method": "post",
+          "url": "{{Connection.protocol}}{{Connection.url}}<@/api/v1/indicators/IPv4/@>{{manual-trigger.data.ip}}<@/general@>",
+          "url_path": "/api/v1/indicators/IPv4/<<ip-address>>/general",
+          "url_prefix": null,
+          "payload": "{}",
+          "parameters": [],
+          "retry_on_status_code": null,
+          "retry_on_status_codes": [
+            500
+          ],
+          "ssl_verification": true,
+          "timeout": 30,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "use_authentication_data": true,
+          "use_proxy": false,
+          "proxy_user": null,
+          "proxy_password": null,
+          "proxy_host": null,
+          "proxy_port": null,
+          "redirect_follow": true,
+          "continue_on_fail": false
+        },
+        "state": "active",
+        "description": "OTX data on malicious activity observed by AlienVault Labs (IP Reputation).",
+        "client_data": {
+          "position": {
+            "x": 640,
+            "y": 377.35439999999994
+          },
+          "dimensions": {
+            "width": 256,
+            "height": 76
+          },
+          "collapsed": false
+        },
+        "snippet_workflow_id": null,
+        "snippet_version_id": null
+      },
+      "export_id": 2,
+      "connected_to": [],
+      "parent_action": null
+    },
+    {
+      "action": {
+        "type": "http_request",
+        "tag": "integration",
+        "connection_id": "bb7b2e46-c62f-4ae8-a55c-70b808aac2fc",
+        "connection_name": "",
+        "use_connection_name": false,
+        "integration_id": "91f9b66f-5894-4c21-9dc2-3be3ba04e1f2",
+        "data": {
+          "name": "IP Lookup via Community API",
+          "action_type": "http_request",
+          "public_action_id": "722022b7-fc59-41e7-9417-c55b431cc09d",
+          "method": "get",
+          "url": "{{Connection.protocol}}{{Connection.url}}<@/v3/community/@>{{manual-trigger.data.ip}}",
+          "url_path": "/v3/community/<<ip>>",
+          "url_prefix": null,
+          "payload": null,
+          "parameters": [],
+          "retry_on_status_code": null,
+          "retry_on_status_codes": [
+            500
+          ],
+          "ssl_verification": true,
+          "timeout": 30,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "use_authentication_data": true,
+          "use_proxy": false,
+          "proxy_user": null,
+          "proxy_password": null,
+          "proxy_host": null,
+          "proxy_port": null,
+          "redirect_follow": true,
+          "continue_on_fail": false
+        },
+        "state": "active",
+        "description": "The Community API provides community users with a free tool to\nquery IPs in the GreyNoise dataset and retrieve a subset of the full\nIP context data returned by the IP Lookup API.",
+        "client_data": {
+          "position": {
+            "x": 320,
+            "y": 377.35439999999994
+          },
+          "dimensions": {
+            "width": 256,
+            "height": 76
+          },
+          "collapsed": false
+        },
+        "snippet_workflow_id": null,
+        "snippet_version_id": null
+      },
+      "export_id": 3,
+      "connected_to": [],
+      "parent_action": null
+    },
+    {
+      "action": {
+        "type": "http_request",
+        "tag": "integration",
+        "connection_id": "72041445-cd8a-4d89-915b-fd0befc6aa0d",
+        "connection_name": "",
+        "use_connection_name": false,
+        "integration_id": "99c539d6-9597-4e8e-97df-a2e802fd6387",
+        "data": {
+          "name": "Lookup IPv4 Address Passive DNS",
+          "action_type": "http_request",
+          "public_action_id": "6bf081a8-ecbb-4d10-b849-37b1201ed407",
+          "method": "post",
+          "url": "{{Connection.protocol}}{{Connection.url}}<@/api/v1/indicators/IPv4/@>{{manual-trigger.data.ip}}<@/passive_dns@>",
+          "url_path": "/api/v1/indicators/IPv4/<<ip-address>>/passive_dns",
+          "url_prefix": null,
+          "payload": "{}",
+          "parameters": [],
+          "retry_on_status_code": null,
+          "retry_on_status_codes": [
+            500
+          ],
+          "ssl_verification": true,
+          "timeout": 30,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "use_authentication_data": true,
+          "use_proxy": false,
+          "proxy_user": null,
+          "proxy_password": null,
+          "proxy_host": null,
+          "proxy_port": null,
+          "redirect_follow": true,
+          "continue_on_fail": false
+        },
+        "state": "active",
+        "description": "Passive dns information about hostnames/domains observed by AlienVault Labs pointing to this IPv4 address.",
+        "client_data": {
+          "position": {
+            "x": 968,
+            "y": 378.7087999999999
+          },
+          "dimensions": {
+            "width": 256,
+            "height": 75
+          },
+          "collapsed": false
+        },
+        "snippet_workflow_id": null,
+        "snippet_version_id": null
+      },
+      "export_id": 4,
+      "connected_to": [],
+      "parent_action": null
+    },
+    {
+      "action": {
+        "type": "http_request",
+        "tag": "integration",
+        "connection_id": "58e73d24-f91e-4c49-b276-961172dd02d4",
+        "connection_name": "",
+        "use_connection_name": false,
+        "integration_id": "ea6018b7-2a2f-44ca-b9b6-27a0434b0503",
+        "data": {
+          "name": "SDL Query",
+          "action_type": "http_request",
+          "public_action_id": "5864fb04-634a-4cf9-96e8-6b898f26880a",
+          "method": "post",
+          "url": "{{Connection.protocol}}{{Connection.url}}<@/sdl/api/query@>",
+          "url_path": "/sdl/api/query",
+          "url_prefix": null,
+          "payload": "{\n  \"queryType\": \"log\",\n  \"filter\": \"src.ip.address = \\\"{{manual-trigger.data.ip}}\\\" OR dst.ip.address = \\\"{{manual-trigger.data.ip}}\\\"\",\n  \"fromDate\": \"now-48h\",\n  \"toDate\": \"now\"\n}",
+          "parameters": [],
+          "retry_on_status_code": null,
+          "retry_on_status_codes": [
+            500
+          ],
+          "ssl_verification": true,
+          "timeout": 30,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "use_authentication_data": true,
+          "use_proxy": false,
+          "proxy_user": null,
+          "proxy_password": null,
+          "proxy_host": null,
+          "proxy_port": null,
+          "redirect_follow": true,
+          "continue_on_fail": false
+        },
+        "state": "active",
+        "description": "Get events (log records) that match your query.",
+        "client_data": {
+          "position": {
+            "x": -640,
+            "y": 377.35439999999994
+          },
+          "dimensions": {
+            "width": 256,
+            "height": 76
+          },
+          "collapsed": false
+        },
+        "snippet_workflow_id": null,
+        "snippet_version_id": null
+      },
+      "export_id": 6,
+      "connected_to": [],
+      "parent_action": null
+    },
+    {
+      "action": {
+        "type": "http_request",
+        "tag": "integration",
+        "connection_id": "be45cb96-0712-400e-8673-debf66421305",
+        "connection_name": "",
+        "use_connection_name": false,
+        "integration_id": "9b735fa3-69db-4430-bca0-347b57a8604d",
+        "data": {
+          "name": "Search IP address",
+          "action_type": "http_request",
+          "public_action_id": "25394f56-6862-4ba7-9843-5d6c5fa3ac04",
+          "method": "get",
+          "url": "{{Connection.protocol}}{{Connection.url}}<@/api/v3/ip_addresses/@>{{manual-trigger.data.ip}}",
+          "url_path": "/api/v3/ip_addresses/<<ip>>",
+          "url_prefix": null,
+          "payload": null,
+          "parameters": [],
+          "retry_on_status_code": null,
+          "retry_on_status_codes": [
+            500
+          ],
+          "ssl_verification": true,
+          "timeout": 30,
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "use_authentication_data": true,
+          "use_proxy": false,
+          "proxy_user": null,
+          "proxy_password": null,
+          "proxy_host": null,
+          "proxy_port": null,
+          "redirect_follow": true,
+          "continue_on_fail": false
+        },
+        "state": "active",
+        "description": "Given an IP address, retrieves the pertinent analysis report including threat reputation and context produced by 70+ antivirus products/blocklists and a myriad of other security tools and datasets.",
+        "client_data": {
+          "position": {
+            "x": -320,
+            "y": 377.35439999999994
+          },
+          "dimensions": {
+            "width": 256,
+            "height": 76
+          },
+          "collapsed": false
+        },
+        "snippet_workflow_id": null,
+        "snippet_version_id": null
+      },
+      "export_id": 7,
+      "connected_to": [],
+      "parent_action": null
+    }
+  ]
+}
