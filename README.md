@@ -1,2 +1,2 @@
 # SentinelOne-Hyperautomation-Workflows
-SentinelOne Hyperautomation Workflows templates JSON, Guides, and collaboration 
+SentinelOne Hyperautomation Workflows templates, JSON, Guides, and collaboration 
